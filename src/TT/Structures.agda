@@ -121,6 +121,8 @@ record Environment Fam {{context : Context Fam}} : Set where
 
   instᵏ : ∀ {n} -> Kripke n -> Fam (suc n)
   instᵏ k = k top fresh
+  {-# INLINE instᵏ #-}  -- Without the pragma Agda sometimes doesn't see that
+                        -- a recursive call is terminating.
 
   data _↤_ m : ℕ -> Set where
     ø   : m ↤ 0

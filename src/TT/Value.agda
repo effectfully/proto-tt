@@ -1,5 +1,4 @@
-{-# OPTIONS --no-positivity-check --no-termination-check #-}
--- Everything is terminating if you replace (instᵏ k) with (k top fresh).
+{-# OPTIONS --no-positivity-check #-}
 
 module TT.Value where
 
@@ -82,7 +81,7 @@ module _ {A} where
     quoteᵛ (f ·ᵛ x)   = quoteᵛ f · quoteᵛ x
 
     quoteᵏ : ∀ {n} -> Kripke n -> Term (suc n)
-    quoteᵏ = quoteᵛ ∘ instᵏ
+    quoteᵏ k = quoteᵛ (instᵏ k)
 
 quoteᵛ₀ : Value ∸> Pure
 quoteᵛ₀ = quoteᵛ

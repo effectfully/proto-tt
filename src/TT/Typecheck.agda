@@ -1,5 +1,3 @@
-{-# OPTIONS --no-termination-check #-}
-
 module TT.Typecheck where
 
 open import TT.Core public
