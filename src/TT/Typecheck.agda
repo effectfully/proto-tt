@@ -64,12 +64,12 @@ Typed = ∃ λ (σ⁺ : Value⁺) -> ∀ {n} {Γ : Con n} -> Γ ⊢ σ⁺
 
 open TermWith Typed public
 
-data NonInferable : Set where
-  ƛₙᵢ : NonInferable
+data NonInferrable : Set where
+  ƛₙᵢ : NonInferrable
 
 data TCError : Set where
   mismatch     : ∀ {n} -> Pure n -> Pure n -> Term n -> TCError
-  nonInferable : NonInferable -> TCError
+  nonInferrable : NonInferrable -> TCError
   nonFunction  : ∀ {n} -> Term n -> TCError
 
 instance
@@ -79,8 +79,8 @@ instance
   typedShow : Show Typed
   typedShow = record { show = λ p -> show (proj₂ p {Γ = ε}) }
 
-  nonInferableShow : Show NonInferable
-  nonInferableShow = record { show = λ{ ƛₙᵢ -> "ƛ" } }
+  nonInferrableShow : Show NonInferrable
+  nonInferrableShow = record { show = λ{ ƛₙᵢ -> "ƛ" } }
 
   tcErrorShow : Show TCError
   tcErrorShow = record
@@ -91,7 +91,7 @@ instance
                              s++ showCode σᵢ
                              s++ " but got "
                              s++ showCode σₑ
-        ; (nonInferable ni)  -> "can't infer the type of " s++ show ni
+        ; (nonInferrable ni) -> "can't infer the type of " s++ show ni
         ; (nonFunction t)    -> showCode t s++ " is not a function"
         }
     }
@@ -114,7 +114,7 @@ mutual
   infer  type          = return (, typeᵗ)
   infer (π σ τ)        = check σ typeᵛ >>= λ σₜ -> (λ τₜ -> , πᵗ σₜ τₜ) <$> check τ typeᵛ
   infer (var v)        = return (, varᵗ v)
-  infer (ƛ b)          = throw $ nonInferable ƛₙᵢ
+  infer (ƛ b)          = throw $ nonInferrable ƛₙᵢ
   infer (f · x)        = infer f >>= λ
     { (piᵛ σ τₖ , fₜ) -> (λ xₜ -> , fₜ ·ᵗ xₜ) <$> check x σ
     ;  _              -> throw $ nonFunction f
