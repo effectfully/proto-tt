@@ -46,22 +46,6 @@ instance
   valueEnvironment : Environment Value
   valueEnvironment = record { fresh = varᵛ fzero }
 
-  valueSubstitution : Substitution Value
-  valueSubstitution = record { sub = go } where
-    mutual
-      go : Substitutes Value Value
-      go ρ  typeᵛ     = typeᵛ
-      go ρ (piᵛ σ τₖ) = piᵛ (go ρ σ) (goᵏ ρ τₖ)
-      go ρ (varᵛ v)   = lookupᵉ v ρ
-      go ρ (lamᵛ bₖ)  = lamᵛ (goᵏ ρ bₖ)
-      go ρ (f ·ᵛ x)   = go ρ f ·ᵛ go ρ x
-
-      goᵏ : Substitutes Kripke Value
-      goᵏ ρ k ι x = go (renᵉ ι ρ ▷ x) (instᵏ k)
-
-ƛᵛ : ∀ {n} -> Value (suc n) -> Value n
-ƛᵛ = lamᵛ ∘ abstᵏ
-
 _⇒ᵛ_ : ∀ {n} -> Value n -> Value n -> Value n
 σ ⇒ᵛ τ = piᵛ σ (λ ι _ -> ren ι τ)
 
